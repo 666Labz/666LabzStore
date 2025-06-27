@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkout - 666 Labz</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background-color: #ffffff;
+      color: #222;
+    }
+
+    header {
+      background-color: #222;
+      padding: 20px 0;
+    }
+
+    .header-inner {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-button {
+      position: absolute;
+      left: 20px;
+      color: wheat;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .logo img {
+      height: 50px;
+      max-width: 100%;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 30px;
+      background-color: #fff;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 28px;
+      color: #403b3b;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .btn-checkout {
+      width: 100%;
+      padding: 14px;
+      background-color: #000;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-checkout:hover {
+      background-color: #444;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      color: #777;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+
+      .logo img {
+        height: 40px;
+      }
+
+      .back-button {
+        font-size: 16px;
+        left: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="back-button">← Kembali</a>
+      <a href="#" class="logo"><img src="LOGOATAS.png" alt="logo"></a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1>Formulir Checkout</h1>
+    <form id="checkoutForm">
+      <div class="form-group">
+        <label for="nama">Nama Lengkap</label>
+        <input type="text" id="nama" name="nama" required>
+      </div>
+
+      <div class="form-group">
+        <label for="alamat">Alamat Pengiriman</label>
+        <input type="text" id="alamat" name="alamat" required>
+      </div>
+
+      <div class="form-group">
+        <label for="nohp">Nomor WhatsApp</label>
+        <input type="tel" id="nohp" name="nohp" required>
+      </div>
+
+      <div class="form-group">
+        <label for="produk">Produk yang Dibeli</label>
+        <select id="produk" name="produk" required>
+          <option value="Rebel Hoodie">Rebel Hoodie</option>
+          <option value="Symbol Snapback">Symbol Snapback</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-checkout">Konfirmasi via WhatsApp</button>
+    </form>
+  </div>
+
+  <footer>© 2025 666 Labz — All Rights Reserved</footer>
+
+  <script>
+    document.getElementById("checkoutForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      
+      const nama = document.getElementById("nama").value;
+      const alamat = document.getElementById("alamat").value;
+      const nohp = document.getElementById("nohp").value;
+      const produk = document.getElementById("produk").value;
+
+      const pesan = `Halo, saya ingin memesan:\n\nProduk: ${produk}\nNama: ${nama}\nAlamat: ${alamat}\nNomor WA: ${nohp}`;
+      const url = `https://wa.me/628983425672?text=${encodeURIComponent(pesan)}`;
+
+      window.open(url, '_blank');
+    });
+  </script>
+
+</body>
+</html>

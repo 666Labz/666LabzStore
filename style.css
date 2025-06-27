@@ -68,10 +68,11 @@ a {
 
 .slide-img {
   min-width: 100%;
-  object-fit: cover;
+  object-fit: contain;
   height: 100%;
   user-select: none;
   pointer-events: none;
+  background-color: #111;
 }
 
 .slider-text {

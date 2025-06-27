@@ -58,11 +58,12 @@ a {
   position: relative;
   overflow: hidden;
   height: 70vh;
+  touch-action: pan-y;
 }
 
 .slider-track {
   display: flex;
-  transition: transform 2s ease;
+  transition: transform 0.3s ease;
   height: 100%;
 }
 
@@ -152,6 +153,122 @@ a {
 .dot.active {
   opacity: 1;
 }
+
+/* ================== SLIDER SCRIPT (REALTIME + PAUSE ON EDGE) ================== */
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide-img');
+  const totalSlides = slides.length;
+  const sliderTrack = document.getElementById('sliderTrack');
+  const sliderDots = document.getElementById('sliderDots');
+  let autoSlideTimer;
+  let isDragging = false;
+  let startX = 0;
+  let currentTranslate = 0;
+  let prevTranslate = 0;
+  let animationID;
+  const slider = document.querySelector('.hero-slider');
+
+  // Buat dot navigasi
+  slides.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.classList.add('dot');
+    if (i === 0) dot.classList.add('active');
+    dot.addEventListener('click', () => goToSlide(i));
+    sliderDots.appendChild(dot);
+  });
+
+  function updateSlider() {
+    currentTranslate = -currentSlide * slider.offsetWidth;
+    prevTranslate = currentTranslate;
+    sliderTrack.style.transition = 'transform 0.3s ease';
+    sliderTrack.style.transform = `translateX(${currentTranslate}px)`;
+    document.querySelectorAll('.dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentSlide);
+    });
+  }
+
+  function changeSlide(direction) {
+    if ((currentSlide === totalSlides - 1 && direction === 1) || (currentSlide === 0 && direction === -1)) return;
+    currentSlide = (currentSlide + direction);
+    updateSlider();
+  }
+
+  function goToSlide(index) {
+    currentSlide = index;
+    updateSlider();
+  }
+
+  function startAutoSlide() {
+    autoSlideTimer = setInterval(() => {
+      if (currentSlide < totalSlides - 1) {
+        changeSlide(1);
+      }
+    }, 5000);
+  }
+
+  function pauseAutoSlide() {
+    clearInterval(autoSlideTimer);
+    setTimeout(() => {
+      startAutoSlide();
+    }, 5000);
+  }
+
+  function setSliderPosition() {
+    sliderTrack.style.transition = 'none';
+    sliderTrack.style.transform = `translateX(${currentTranslate}px)`;
+  }
+
+  function animation() {
+    setSliderPosition();
+    if (isDragging) requestAnimationFrame(animation);
+  }
+
+  function getPositionX(e) {
+    return e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+  }
+
+  slider.addEventListener('mousedown', dragStart);
+  slider.addEventListener('touchstart', dragStart, { passive: true });
+
+  slider.addEventListener('mouseup', dragEnd);
+  slider.addEventListener('touchend', dragEnd);
+  slider.addEventListener('mousemove', dragAction);
+  slider.addEventListener('touchmove', dragAction, { passive: true });
+
+  function dragStart(e) {
+    startX = getPositionX(e);
+    isDragging = true;
+    sliderTrack.style.transition = 'none';
+    animationID = requestAnimationFrame(animation);
+    pauseAutoSlide();
+  }
+
+  function dragAction(e) {
+    if (!isDragging) return;
+    const currentX = getPositionX(e);
+    const diff = currentX - startX;
+    currentTranslate = prevTranslate + diff;
+  }
+
+  function dragEnd() {
+    cancelAnimationFrame(animationID);
+    isDragging = false;
+
+    const movedBy = currentTranslate - prevTranslate;
+
+    if (movedBy < -100 && currentSlide < totalSlides - 1) {
+      currentSlide++;
+    } else if (movedBy > 100 && currentSlide > 0) {
+      currentSlide--;
+    }
+
+    updateSlider();
+    prevTranslate = -currentSlide * slider.offsetWidth;
+  }
+
+  startAutoSlide();
+</script>
 
 /* ================== PRODUCTS ================== */
 .section-title {

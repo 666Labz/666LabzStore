@@ -96,43 +96,91 @@
 
   <!-- SLIDER SCRIPT -->
   <script>
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.slide-img');
-    const totalSlides = slides.length;
-    const sliderTrack = document.getElementById('sliderTrack');
-    const sliderDots = document.getElementById('sliderDots');
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide-img');
+  const totalSlides = slides.length;
+  const sliderTrack = document.getElementById('sliderTrack');
+  const sliderDots = document.getElementById('sliderDots');
 
-    // Buat dot navigasi
-    slides.forEach((_, i) => {
-      const dot = document.createElement('div');
-      dot.classList.add('dot');
-      if (i === 0) dot.classList.add('active');
-      dot.addEventListener('click', () => goToSlide(i));
-      sliderDots.appendChild(dot);
+  // Buat dot navigasi
+  slides.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.classList.add('dot');
+    if (i === 0) dot.classList.add('active');
+    dot.addEventListener('click', () => goToSlide(i));
+    sliderDots.appendChild(dot);
+  });
+
+  function updateSlider() {
+    sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+    document.querySelectorAll('.dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentSlide);
     });
+  }
 
-    function updateSlider() {
-      sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
-      document.querySelectorAll('.dot').forEach((dot, i) => {
-        dot.classList.toggle('active', i === currentSlide);
-      });
+  function changeSlide(direction) {
+    currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+    updateSlider();
+  }
+
+  function goToSlide(index) {
+    currentSlide = index;
+    updateSlider();
+  }
+
+  // Auto slide tiap 5 detik
+  setInterval(() => {
+    changeSlide(1);
+  }, 5000);
+
+  // TOUCH + MOUSE SUPPORT
+  let startX = 0;
+  let isDragging = false;
+  const slider = document.querySelector('.hero-slider');
+
+  // Touch
+  slider.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    isDragging = true;
+  });
+
+  slider.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    const diffX = e.touches[0].clientX - startX;
+    if (Math.abs(diffX) > 50) {
+      changeSlide(diffX > 0 ? -1 : 1);
+      isDragging = false;
     }
+  });
 
-    function changeSlide(direction) {
-      currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
-      updateSlider();
+  slider.addEventListener('touchend', () => {
+    isDragging = false;
+  });
+
+  // Mouse
+  slider.addEventListener('mousedown', (e) => {
+    startX = e.clientX;
+    isDragging = true;
+  });
+
+  slider.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const diffX = e.clientX - startX;
+    if (Math.abs(diffX) > 50) {
+      changeSlide(diffX > 0 ? -1 : 1);
+      isDragging = false;
     }
+  });
 
-    function goToSlide(index) {
-      currentSlide = index;
-      updateSlider();
-    }
+  slider.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
 
-    // Auto slide
-    setInterval(() => {
-      changeSlide(1);
-    }, 5000);
-  </script>
+  slider.addEventListener('mouseleave', () => {
+    isDragging = false;
+  });
+</script>
+
 
 </body>
 </html>
